@@ -1,0 +1,21 @@
+// Caminhos da API usados pelo front. O teste scripts/testar-api.mjs confere cada um contra a API de verdade.
+export const ROTAS = {
+  status: '/api/status',
+  fontes: '/api/fontes',
+  estados: '/api/estados',
+  resumo: '/api/resumo',
+  camadasResumo: '/api/camadas/resumo',
+  relatorio: '/api/relatorio',
+  queimadasGeojson: '/api/queimadas/geojson',
+  queimadasEstatisticas: '/api/queimadas/estatisticas',
+  desmatamentoGeojson: '/api/desmatamento/geojson',
+  desmatamentoEstatisticas: '/api/desmatamento/estatisticas',
+  qualidadeArGeojson: '/api/qualidade-ar/geojson',
+  chuvasGeojson: '/api/chuvas/geojson',
+  cheiasGeojson: '/api/cheias/geojson',
+  alertas: '/api/alertas',
+  clima: '/api/clima',
+  municipios: '/api/municipios',
+  municipiosGeojson: '/api/municipios/geojson',
+  contornosEstados: '/api/contornos/estados',
+} as const;
