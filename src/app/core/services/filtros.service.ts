@@ -1,45 +1,34 @@
 import { Injectable, signal } from '@angular/core';
-import { CamadaId, SIGLAS } from '../config/camadas.config';
-import { MunicipioResumo } from '../models/api.models';
+import { CamadaId } from '../config/camadas.config';
+import { Caixa } from '../util/bbox.util';
 
-function lerEstadoDaUrl(): string | null {
-  try {
-    const e = new URLSearchParams(window.location.search).get('estado');
-    return e && SIGLAS.includes(e.toUpperCase()) ? e.toUpperCase() : null;
-  } catch {
-    return null;
-  }
+export interface Lugar {
+  tipo: 'municipio' | 'estado';
+  nome: string;
+  uf: string;
+  codigo?: string;
+  bbox: Caixa | null;
 }
 
-// Estado global dos filtros: vale para todas as telas
+// Estado global da tela: camadas marcadas e lugar buscado
 @Injectable({ providedIn: 'root' })
 export class FiltrosService {
-  readonly estado = signal<string | null>(lerEstadoDaUrl());
-  readonly horas = signal<number>(24);
-  readonly satelites = signal<string[]>(['modis', 'noaa20', 'suomi']);
-  readonly camadasAtivas = signal<CamadaId[]>(['queimadas']);
-  readonly municipio = signal<MunicipioResumo | null>(null);
+  // O mapa abre limpo: o usuario marca o que quer ver
+  readonly camadasAtivas = signal<CamadaId[]>([]);
+  readonly lugar = signal<Lugar | null>(null);
+  // Quantos pontos cada camada tem na area visivel (o mapa preenche, a legenda mostra)
+  readonly contagens = signal<Record<string, number>>({});
 
-  camadaAtiva(id: CamadaId): boolean {
+  ativa(id: CamadaId): boolean {
     return this.camadasAtivas().includes(id);
   }
 
-  alternarCamada(id: CamadaId): void {
-    this.camadasAtivas.update((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
+  // Cada caixinha liga e desliga a sua camada; todas podem ficar juntas
+  alternar(id: CamadaId): void {
+    this.camadasAtivas.update((lista) => (lista.includes(id) ? lista.filter((x) => x !== id) : [...lista, id]));
   }
 
-  alternarSatelite(id: string): void {
-    this.satelites.update((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
-  }
-
-  definirEstado(sigla: string | null): void {
-    this.estado.set(sigla);
-    const m = this.municipio();
-    if (m && sigla && m.uf !== sigla) this.municipio.set(null);
-  }
-
-  escolherMunicipio(m: MunicipioResumo | null): void {
-    this.municipio.set(m);
-    if (m) this.estado.set(m.uf);
+  escolherLugar(lugar: Lugar | null): void {
+    this.lugar.set(lugar);
   }
 }

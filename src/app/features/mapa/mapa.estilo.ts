@@ -1,6 +1,6 @@
 import type { StyleSpecification } from 'maplibre-gl';
 
-// Mapa base claro do OpenStreetMap (a atribuicao aparece no canto do mapa)
+// Mapa base claro do OpenStreetMap (os nomes das cidades aparecem sozinhos conforme o zoom)
 export const ESTILO_BASE: StyleSpecification = {
   version: 8,
   sources: {

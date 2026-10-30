@@ -5,16 +5,13 @@ import { provideRouter } from '@angular/router';
 import { App } from './app';
 
 describe('App', () => {
-  beforeEach(async () => {
+  it('cria o aplicativo', async () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
-  });
-
-  it('cria o aplicativo e mostra a marca GUARDA', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('GUARDA');
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

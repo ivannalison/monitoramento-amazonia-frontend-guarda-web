@@ -1,58 +1,26 @@
-export type CamadaId = 'queimadas' | 'ar' | 'chuva' | 'cheias' | 'desmatamento';
+export type CamadaId = 'chuva' | 'ar' | 'modis' | 'noaa20' | 'suomi' | 'cheias' | 'desmatamento';
 
-export interface ItemLegenda { cor: string; rotulo: string; }
-export interface CamadaConfig {
-  id: CamadaId;
-  nome: string;
-  cor: string;
-  fonteId: string;
-  descricao: string;
-  legenda: ItemLegenda[];
-}
+export interface OpcaoCamada { id: CamadaId; rotulo: string; fonteId: string; }
 
-export const CAMADAS: CamadaConfig[] = [
-  {
-    id: 'queimadas', nome: 'Queimadas', cor: '#f97316', fonteId: 'firms',
-    descricao: 'Focos de calor detectados por satélite (NASA FIRMS)',
-    legenda: [{ cor: '#fb923c', rotulo: 'Intensidade baixa' }, { cor: '#ef4444', rotulo: 'Intensidade média' }, { cor: '#7f1d1d', rotulo: 'Intensidade alta' }],
-  },
-  {
-    id: 'ar', nome: 'Fumaça / qualidade do ar', cor: '#a78bfa', fonteId: 'ar',
-    descricao: 'PM2.5 estimado por modelo de satélite (Open-Meteo)',
-    legenda: [{ cor: '#d1d5db', rotulo: 'PM2.5 baixo' }, { cor: '#a78bfa', rotulo: 'PM2.5 moderado' }, { cor: '#4c1d95', rotulo: 'PM2.5 alto' }],
-  },
-  {
-    id: 'chuva', nome: 'Chuva', cor: '#3b82f6', fonteId: 'chuva',
-    descricao: 'Precipitação por hora (Open-Meteo)',
-    legenda: [{ cor: '#bfdbfe', rotulo: 'Fraca' }, { cor: '#2563eb', rotulo: 'Moderada' }, { cor: '#1e3a8a', rotulo: 'Forte' }],
-  },
-  {
-    id: 'cheias', nome: 'Risco de cheia', cor: '#06b6d4', fonteId: 'cheia',
-    descricao: 'Vazão dos rios contra a média de 30 dias (estimativa, não é alerta oficial)',
-    legenda: [{ cor: '#22d3ee', rotulo: 'Atenção' }, { cor: '#0891b2', rotulo: 'Alto' }, { cor: '#164e63', rotulo: 'Extremo' }],
-  },
-  {
-    id: 'desmatamento', nome: 'Desmatamento (DETER)', cor: '#b45309', fonteId: 'desmatamento',
-    descricao: 'Alertas dos últimos 90 dias (INPE DETER)',
-    legenda: [{ cor: '#b45309', rotulo: 'Alerta (tamanho = área)' }],
-  },
+// As 7 opcoes da caixa branca. Todas podem ficar marcadas ao mesmo tempo; o mapa abre sem nenhuma.
+export const OPCOES: OpcaoCamada[] = [
+  { id: 'chuva', rotulo: 'Chuvas', fonteId: 'chuva' },
+  { id: 'ar', rotulo: 'Qualidade do Ar - Estações Virtuais', fonteId: 'ar' },
+  { id: 'modis', rotulo: 'Queimadas (MODIS 24h)', fonteId: 'firms' },
+  { id: 'noaa20', rotulo: 'Queimadas (NOAA-20 24h)', fonteId: 'firms' },
+  { id: 'suomi', rotulo: 'Queimadas (Suomi 24h)', fonteId: 'firms' },
+  { id: 'cheias', rotulo: 'Risco de Cheia', fonteId: 'cheia' },
+  { id: 'desmatamento', rotulo: 'Desmatamento (DETER 90 dias)', fonteId: 'desmatamento' },
 ];
-
-export const SATELITES: Array<{ id: string; nome: string }> = [
-  { id: 'modis', nome: 'MODIS' },
-  { id: 'noaa20', nome: 'NOAA-20' },
-  { id: 'suomi', nome: 'Suomi NPP' },
-];
-export const HORAS_OPCOES: number[] = [6, 12, 24, 48, 72, 168];
-export const SIGLAS: string[] = ['AC', 'AM', 'AP', 'MA', 'MT', 'PA', 'RO', 'RR', 'TO'];
+export const SATELITES_IDS: CamadaId[] = ['modis', 'noaa20', 'suomi'];
+export const NOME_SATELITE: Record<string, string> = { modis: 'MODIS', noaa20: 'NOAA-20', suomi: 'Suomi NPP' };
+export const COR_SATELITE: Record<string, string> = { modis: '#e11d48', noaa20: '#f97316', suomi: '#eab308' };
+// id de /api/fontes -> camadas que dependem dele
+export const CAMADAS_DA_FONTE: Record<string, CamadaId[]> = {
+  firms: ['modis', 'noaa20', 'suomi'], ar: ['ar'], chuva: ['chuva'], cheia: ['cheias'], desmatamento: ['desmatamento'],
+};
 export const NOMES_ESTADOS: Record<string, string> = {
   AC: 'Acre', AM: 'Amazonas', AP: 'Amapá', MA: 'Maranhão', MT: 'Mato Grosso', PA: 'Pará', RO: 'Rondônia', RR: 'Roraima', TO: 'Tocantins',
 };
-// ids de /api/fontes -> camada do mapa
-export const CAMADA_DA_FONTE: Record<string, CamadaId> = {
-  firms: 'queimadas', ar: 'ar', chuva: 'chuva', cheia: 'cheias', desmatamento: 'desmatamento',
-};
 // a partir de quantas horas sem coleta ok o dado e considerado defasado
-export const LIMITE_DEFASAGEM_H: Record<string, number> = {
-  firms: 3, ar: 8, chuva: 8, cheia: 8, clima: 14, desmatamento: 14,
-};
+export const LIMITE_DEFASAGEM_H: Record<string, number> = { firms: 3, ar: 8, chuva: 8, cheia: 8, clima: 14, desmatamento: 14 };

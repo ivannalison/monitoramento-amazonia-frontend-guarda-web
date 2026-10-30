@@ -1,91 +1,100 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FiltrosService } from '../../core/services/filtros.service';
-import { BarraStatusComponent } from './components/barra-status.component';
-import { BuscaMunicipioComponent } from './components/busca-municipio.component';
-import { FiltrosMapaComponent } from './components/filtros-mapa.component';
+import { ModalComponent } from '../../shared/components/modal.component';
+import { DataManausPipe } from '../../shared/pipes/data-manaus.pipe';
+import { SobreConteudoComponent } from '../sobre/sobre-conteudo.component';
+import { CaixaOpcoesComponent } from './components/caixa-opcoes.component';
 import { LegendaComponent } from './components/legenda.component';
 import { LinhaDoTempoComponent } from './components/linha-do-tempo.component';
 import { MapaCanvasComponent } from './components/mapa-canvas.component';
-import { PainelCamadasComponent } from './components/painel-camadas.component';
-import { PopupDetalheComponent } from './components/popup-detalhe.component';
-import { RelatorioEstadoComponent } from './components/relatorio-estado.component';
-import { Selecao } from './popup.util';
+import { MarcaComponent } from './components/marca.component';
+
+// Telas pequenas (celular, janela estreita ou baixa): a caixa de opcoes vira um botao que abre e fecha.
+// Esta consulta precisa ser igual a do CSS abaixo.
+const TELA_PEQUENA = '(max-width: 720px), (max-height: 560px)';
 
 @Component({
   selector: 'guarda-mapa-page',
-  imports: [MapaCanvasComponent, BuscaMunicipioComponent, FiltrosMapaComponent, PainelCamadasComponent, LinhaDoTempoComponent, LegendaComponent, PopupDetalheComponent, RelatorioEstadoComponent, BarraStatusComponent],
+  imports: [MapaCanvasComponent, CaixaOpcoesComponent, MarcaComponent, LegendaComponent, LinhaDoTempoComponent, ModalComponent, SobreConteudoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="pagina">
-      <div class="area">
-        <guarda-mapa-canvas [limiteQueimadas]="limiteQueimadas()" [horaChuva]="horaChuva()" (pontoSelecionado)="selecao.set($event)" (estadoClicado)="estadoRelatorio.set($event)" />
-
-        <button type="button" class="alternar botao nao-imprimir" (click)="painelAberto.set(!painelAberto())" [attr.aria-expanded]="painelAberto()">
-          {{ painelAberto() ? 'Ocultar painel' : 'Camadas e filtros' }}
+    <div class="pagina">
+      <guarda-mapa-canvas [horaChuva]="horaChuva()" />
+      @if (compacto()) {
+        <button type="button" class="botao alternar nao-imprimir" (click)="opcoesAbertas.set(!opcoesAbertas())" [attr.aria-expanded]="opcoesAbertas()">
+          {{ opcoesAbertas() ? 'Fechar' : 'Opções' }}
         </button>
-
-        @if (painelAberto()) {
-          <aside class="paineis vidro nao-imprimir" aria-label="Camadas e filtros">
-            <guarda-busca-municipio />
-            <guarda-filtros-mapa />
-            <guarda-painel-camadas />
-            @if (filtros.camadaAtiva('queimadas')) {
-              <guarda-linha-do-tempo rotulo="Focos nas últimas 24 h" [min]="-24" [max]="0" [(valor)]="horaQueimadas" [formatar]="formatarQueimadas" />
-            }
-            @if (filtros.camadaAtiva('chuva')) {
-              <guarda-linha-do-tempo rotulo="Chuva nas próximas horas" [min]="0" [max]="24" [(valor)]="horaChuvaOffset" [formatar]="formatarChuva" />
-            }
-          </aside>
+      }
+      <guarda-caixa-opcoes class="caixa nao-imprimir" [class.oculta]="compacto() && !opcoesAbertas()" />
+      <guarda-marca class="marca nao-imprimir" (abrirSobre)="sobreAberto.set(true)" />
+      <div class="inferior nao-imprimir">
+        @if (filtros.ativa('chuva')) {
+          <guarda-linha-do-tempo [min]="-24" [max]="24" [texto]="rotuloChuva()" [(valor)]="deslocamentoChuva" />
         }
-
-        <div class="legenda nao-imprimir"><guarda-legenda /></div>
-
-        @if (selecao(); as sel) {
-          <div class="popup"><guarda-popup-detalhe [selecao]="sel" (fechar)="selecao.set(null)" /></div>
-        }
-        @if (estadoRelatorio(); as uf) {
-          <div class="relatorio"><guarda-relatorio-estado [estado]="uf" (fechar)="estadoRelatorio.set(null)" /></div>
-        }
+        <guarda-legenda />
       </div>
-      <guarda-barra-status class="nao-imprimir" />
-    </section>
+      <guarda-modal titulo="Sobre o GUARDA" [aberto]="sobreAberto()" (fechar)="sobreAberto.set(false)">
+        <guarda-sobre-conteudo />
+      </guarda-modal>
+    </div>
   `,
   styles: [`
     :host { display: block; height: 100%; }
-    .pagina { display: flex; flex-direction: column; height: 100%; }
-    .area { position: relative; flex: 1; min-height: 0; overflow: hidden; }
-    .alternar { position: absolute; top: 12px; left: 12px; z-index: 6; }
-    .paineis { position: absolute; top: 54px; left: 12px; z-index: 5; width: 300px; max-height: calc(100% - 150px); overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 14px; }
-    .legenda { position: absolute; left: 12px; bottom: 12px; z-index: 4; max-width: calc(100% - 24px); }
-    .popup { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 7; }
-    .relatorio { position: absolute; top: 12px; right: 56px; z-index: 7; max-height: calc(100% - 24px); display: flex; }
-    @media (max-width: 720px) {
-      .paineis { width: calc(100% - 24px); max-height: 46%; }
-      .popup { bottom: 12px; width: calc(100% - 24px); display: flex; justify-content: center; }
-      .relatorio { right: 12px; left: 12px; top: auto; bottom: 12px; max-height: 60%; justify-content: center; }
-      .legenda { bottom: 84px; }
+    .pagina { position: relative; height: 100%; overflow: hidden; }
+    .caixa { position: absolute; top: 12px; left: 12px; z-index: 6; }
+    .marca { position: absolute; top: 12px; right: 12px; z-index: 6; }
+    /* as legendas ficam embaixo, a esquerda; se forem muitas, rolam em vez de cobrir a caixa de opcoes */
+    .inferior { position: absolute; left: 12px; bottom: 24px; z-index: 4; width: min(470px, calc(100% - 24px)); display: flex; flex-direction: column; gap: 8px; max-height: calc(100% - 320px); min-height: 0; overflow: auto; }
+    .oculta { display: none; }
+    .alternar { display: none; }
+    /* telas pequenas: botao Opcoes, marca menor no canto, legendas embaixo sem cobrir o zoom */
+    @media (max-width: 720px), (max-height: 560px) {
+      .alternar { display: inline-block; position: absolute; top: 10px; left: 10px; z-index: 8; }
+      .caixa { top: 54px; left: 10px; max-width: calc(100% - 20px); max-height: calc(100% - 64px); overflow: auto; z-index: 7; }
+      .marca { top: 8px; right: 8px; }
+      .inferior { left: 8px; right: 60px; bottom: 8px; width: auto; max-height: 42%; }
     }
   `],
 })
 export class MapaPage {
   protected readonly filtros = inject(FiltrosService);
-  protected readonly selecao = signal<Selecao | null>(null);
-  protected readonly estadoRelatorio = signal<string | null>(null);
-  protected readonly painelAberto = signal(window.innerWidth >= 720);
-  protected readonly horaQueimadas = signal(0);
-  protected readonly horaChuvaOffset = signal(0);
+  protected readonly sobreAberto = signal(false);
+  protected readonly deslocamentoChuva = signal(0);
+  private readonly pipeData = new DataManausPipe();
+  private readonly consulta = typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(TELA_PEQUENA) : null;
+  protected readonly compacto = signal(this.consulta?.matches ?? false);
+  protected readonly opcoesAbertas = signal(!(this.consulta?.matches ?? false));
 
-  protected readonly limiteQueimadas = computed(() => {
-    const v = this.horaQueimadas();
-    return v === 0 ? null : new Date(Date.now() + v * 3600000).toISOString();
-  });
+  constructor() {
+    const ouvir = (e: MediaQueryListEvent): void => {
+      this.compacto.set(e.matches);
+      this.opcoesAbertas.set(!e.matches);
+    };
+    this.consulta?.addEventListener('change', ouvir);
+    inject(DestroyRef).onDestroy(() => this.consulta?.removeEventListener('change', ouvir));
+    // em tela pequena, ao escolher uma cidade ou estado a caixa se fecha para mostrar o mapa
+    effect(() => {
+      const lugar = this.filtros.lugar();
+      if (lugar && untracked(() => this.compacto())) this.opcoesAbertas.set(false);
+    });
+  }
+
+  // hora cheia (UTC) da previsao mostrada; null = hora atual (a API assume sozinha)
   protected readonly horaChuva = computed(() => {
-    const v = this.horaChuvaOffset();
+    const v = this.deslocamentoChuva();
     if (v === 0) return null;
+    return new Date(this.baseHora().getTime() + v * 3600000).toISOString().slice(0, 16);
+  });
+
+  protected readonly rotuloChuva = computed(() => {
+    const v = this.deslocamentoChuva();
+    const quando = this.pipeData.transform(new Date(this.baseHora().getTime() + v * 3600000), 'longo');
+    return (v < 0 ? 'Passado: ' : v > 0 ? 'Previsão: ' : 'Agora: ') + quando;
+  });
+
+  private baseHora(): Date {
     const base = new Date();
     base.setUTCMinutes(0, 0, 0);
-    return new Date(base.getTime() + v * 3600000).toISOString().slice(0, 16);
-  });
-  protected readonly formatarQueimadas = (v: number): string => (v === 0 ? 'agora' : -v + ' h atrás');
-  protected readonly formatarChuva = (v: number): string => (v === 0 ? 'agora' : '+' + v + ' h');
+    return base;
+  }
 }
