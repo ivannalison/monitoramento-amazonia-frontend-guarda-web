@@ -10,7 +10,7 @@ Angular 20 (componentes standalone e signals) + MapLibre GL 6.
 
 | Parte | Pasta no computador | Repositório no GitHub |
 |---|---|---|
-| **Site (front end)** - este repositório | `C:\Users\nalis\guarda-web` | https://github.com/ivannalison/guarda-web |
+| **Site (front end)** - este repositório | `C:\Users\nalis\guarda-web` | https://github.com/ivannalison/monitoramento-amazonia-frontend-guarda-web |
 | **API (back end)** | `C:\Users\nalis\monitoramento-amazonia-api` | https://github.com/ivannalison/monitoramento-amazonia-api |
 
 O site só faz leituras (GET) na API. A API coleta os dados das fontes públicas (NASA FIRMS, INPE DETER, Open-Meteo e IBGE), guarda no MongoDB Atlas e serve JSON e GeoJSON. Os dois repositórios são independentes: cada um terá o seu próprio container na publicação.
