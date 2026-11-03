@@ -11,6 +11,7 @@ import { AtualizadoHaPipe } from '../../shared/pipes/atualizado-ha.pipe';
     <section class="sobre">
       <h3>Para que serve</h3>
       <p>O GUARDA reúne em um mapa as queimadas, a fumaça, a chuva, o risco de cheia e o desmatamento da Amazônia Legal, quase em tempo real, para apoiar o acompanhamento e a resiliência das comunidades (ODS 11 - Cidades e Comunidades Sustentáveis). O site é aberto, sem cadastro e somente de leitura.</p>
+        <p>Desenvolvido como projeto final do programa Reconecta, da Recode.</p>
 
       <h3>Como usar</h3>
       <ul>
