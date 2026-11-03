@@ -2,7 +2,7 @@
 
 Mapa interativo da **Amazônia Legal** com queimadas, chuva, qualidade do ar, risco de cheia e desmatamento, quase em tempo real. O mapa abre limpo e a pessoa marca, na caixa branca, o que quer ver. Tela única, tema claro, somente leitura, sem cadastro.
 
-Inspirado no SELVA (Sistema Eletrônico de Vigilância Ambiental), com identidade e código próprios. Apoia o acompanhamento ambiental e a resiliência das comunidades (ODS 11 - Cidades e Comunidades Sustentáveis).
+Apoia o acompanhamento ambiental e a resiliência das comunidades (ODS 11 - Cidades e Comunidades Sustentáveis).
 
 Angular 20 (componentes standalone e signals) + MapLibre GL 6.
 
@@ -105,3 +105,11 @@ Domínio próprio, trava automática de cobrança na nuvem e troca do mapa base 
 ## Créditos e termos dos dados
 
 NASA FIRMS (focos de calor), INPE DETER (desmatamento), Open-Meteo (chuva, ar e vazão dos rios; uso gratuito apenas não comercial), IBGE (municípios) e © colaboradores do OpenStreetMap (mapa base).
+
+## Autor
+
+**Ivan Nalison Cassimiro Xavier**
+
+- GitHub: [ivannalison](https://github.com/ivannalison)
+- LinkedIn: [Ivan Nalison](https://www.linkedin.com/in/ivan-nalison/)
+- E-mail: nalison.cn@gmail.com
