@@ -16,7 +16,7 @@ import { ChangeDetectionStrategy, Component, output } from '@angular/core';
     .nome { font-size: 40px; font-weight: 800; letter-spacing: 0.12em; line-height: 1.05; color: rgba(0, 0, 0, 0.75); text-shadow: 0 0 3px rgba(255, 255, 255, 0.95), 0 0 9px rgba(255, 255, 255, 0.85); }
     .sub { font-size: 16px; font-weight: 700; color: rgba(0, 0, 0, 0.75); text-shadow: 0 0 3px rgba(255, 255, 255, 0.95), 0 0 9px rgba(255, 255, 255, 0.85); }
     .botao { pointer-events: auto; margin-top: 8px; font-size: 15px; padding: 7px 18px; }
-    @media (max-width: 720px), (max-height: 560px) {
+    @media (max-width: 600px) {
       .nome { font-size: 24px; }
       .sub { font-size: 12px; }
       .botao { margin-top: 4px; font-size: 13px; padding: 5px 12px; }

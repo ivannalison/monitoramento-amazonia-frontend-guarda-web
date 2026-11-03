@@ -35,7 +35,7 @@ import { TITULOS, TipoPopup, linhasDe } from '../popup.util';
     .chips { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; z-index: 3; max-width: 70%; }
     .chip { background: rgba(255, 255, 255, 0.95); color: var(--texto); border: 1px solid var(--borda); border-radius: 999px; padding: 5px 14px; font-size: 14px; text-align: center; }
     .chip.aviso { border-color: var(--alerta); }
-    .chip.erro { border-color: var(--erro); } @media (max-width: 720px), (max-height: 560px) { .chips { top: 56px; max-width: 94%; } }
+    .chip.erro { border-color: var(--erro); } @media (max-width: 600px) { .chips { top: 56px; max-width: 94%; } }
     .dica { position: absolute; z-index: 5; pointer-events: none; background: rgba(32, 38, 43, 0.92); color: #fff; padding: 4px 9px; border-radius: 4px; font-size: 14px; white-space: nowrap; }
   `],
 })

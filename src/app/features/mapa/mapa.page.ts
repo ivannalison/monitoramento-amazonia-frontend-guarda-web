@@ -11,7 +11,7 @@ import { MarcaComponent } from './components/marca.component';
 
 // Telas pequenas (celular, janela estreita ou baixa): a caixa de opcoes vira um botao que abre e fecha.
 // Esta consulta precisa ser igual a do CSS abaixo.
-const TELA_PEQUENA = '(max-width: 720px), (max-height: 560px)';
+const TELA_PEQUENA = '(max-width: 600px)';
 
 @Component({
   selector: 'guarda-mapa-page',
@@ -48,7 +48,7 @@ const TELA_PEQUENA = '(max-width: 720px), (max-height: 560px)';
     .oculta { display: none; }
     .alternar { display: none; }
     /* telas pequenas: botao Opcoes, marca menor no canto, legendas embaixo sem cobrir o zoom */
-    @media (max-width: 720px), (max-height: 560px) {
+    @media (max-width: 600px) {
       .alternar { display: inline-block; position: absolute; top: 10px; left: 10px; z-index: 8; }
       .caixa { top: 54px; left: 10px; max-width: calc(100% - 20px); max-height: calc(100% - 64px); overflow: auto; z-index: 7; }
       .marca { top: 8px; right: 8px; }
