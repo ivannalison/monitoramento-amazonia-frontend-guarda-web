@@ -10,7 +10,7 @@ const LARGURA = 220;
 const ALTURA = 160;
 const RAIO_GRAUS = 2.4;
 
-// mm/h, R, G, B, opacidade (do azul claro ao vermelho escuro e rosa, como no SELVA)
+// mm/h, R, G, B, opacidade (do azul claro ao vermelho escuro e rosa)
 export const PARADAS_CHUVA: Array<[number, number, number, number, number]> = [
   [0.1, 191, 234, 247, 0.5],
   [0.5, 94, 200, 238, 0.7],

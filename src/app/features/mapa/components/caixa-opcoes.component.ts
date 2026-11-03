@@ -3,7 +3,7 @@ import { OPCOES } from '../../../core/config/camadas.config';
 import { FiltrosService } from '../../../core/services/filtros.service';
 import { BuscaLugarComponent } from './busca-lugar.component';
 
-// A caixa branca do canto superior esquerdo: busca e opcoes (como no SELVA)
+// A caixa branca do canto superior esquerdo: busca e opcoes
 @Component({
   selector: 'guarda-caixa-opcoes',
   imports: [BuscaLugarComponent],

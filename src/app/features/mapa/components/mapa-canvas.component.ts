@@ -371,7 +371,7 @@ export class MapaCanvasComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  // Numeros dentro dos pontos de qualidade do ar (so ao aproximar, como no SELVA)
+  // Numeros dentro dos pontos de qualidade do ar (so ao aproximar)
   private atualizarMarcasAr(): void {
     const mapa = this.mapa;
     const lib = this.lib;

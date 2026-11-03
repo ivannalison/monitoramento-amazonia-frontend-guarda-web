@@ -7,7 +7,7 @@ export interface FaixaAr {
   largura: number;
 }
 
-// Faixas de MP2.5 (ug/m3), referencia CONAMA/Brasil, como no SELVA
+// Faixas de MP2.5 (ug/m3), referencia CONAMA/Brasil
 export const FAIXAS_AR: FaixaAr[] = [
   { nome: 'Boa', de: 0, ate: 25, cor: '#50f050', texto: '#000000', largura: 25 },
   { nome: 'Moderada', de: 25, ate: 50, cor: '#ffff00', texto: '#000000', largura: 25 },

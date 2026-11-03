@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, input, model, signal } from '@angular/core';
 
-// Barra de tempo da chuva, com play (como no SELVA)
+// Barra de tempo da chuva, com play
 @Component({
   selector: 'guarda-linha-do-tempo',
   changeDetection: ChangeDetectionStrategy.OnPush,
